@@ -15,11 +15,15 @@ import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { isAuth } = useSelector((store) => store.AuthReducer);
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
   };
@@ -51,6 +55,8 @@ const LoginForm = () => {
           duration: 3000,
           isClosable: true,
         });
+        dispatch({ type: "LOGIN", payload: email });
+
         navigate("/");
       } else {
         // Invalid email or password

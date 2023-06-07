@@ -39,26 +39,25 @@ const plainText = [
 const ComparePage = () => {
   const presentText = useSelector((store) => store.AppReducer.presentText);
 
-  // console.log(data);
-
-  const [inputtypes, setInputtypes] = useState("");
-  const [presenttchar, setPresenttchar] = useState(presentText[0]);
-  const [runt, setRunt] = useState(null);
-  const [all, setAll] = useState(1);
-  const [gltchars, setGltchars] = useState(0);
-  const [curc, setCurc] = useState({});
-  const [seconds, setSeconds] = useState(0);
-  const [times, setTimes] = useState(null);
-  const [allchar, setAllchar] = useState(0);
-  const [gltchar, setGltchar] = useState(0);
-  const [level, setLevel] = useState("plainText");
-  const [isSmallerThanMd] = useMediaQuery("(max-width: 768px)");
-  let totalCharacterTyped;
+  const [inputtypes, setInputtypes] = useState(""); // State for user input
+  const [presenttchar, setPresenttchar] = useState(presentText[0]); // State for the current character to be displayed
+  const [runt, setRunt] = useState(null); // Time when typing starts
+  const [all, setAll] = useState(1); // Total characters typed
+  const [gltchars, setGltchars] = useState(0); // Total incorrect characters typed
+  const [curc, setCurc] = useState({}); // Object to store correctness of each character
+  const [seconds, setSeconds] = useState(0); // Time elapsed in seconds
+  const [times, setTimes] = useState(null); // Interval ID for updating seconds
+  const [allchar, setAllchar] = useState(0); // Total characters typed for calculating WPM
+  const [gltchar, setGltchar] = useState(0); // Total incorrect characters typed for calculating WPM
+  const [level, setLevel] = useState("plainText"); // Current level of text to be typed
+  const [isSmallerThanMd] = useMediaQuery("(max-width: 768px)"); // Media query for responsiveness
+  let totalCharacterTyped; // Variable to store total characters typed
   const dispatch = useDispatch();
+
+  // Check if 5 minutes have passed and calculate WPM
   if (seconds % 300 === 0 && seconds !== 0 && times) {
     clearInterval(times);
     setSeconds(0);
-    // console.log("ll");
     const match = (Date.now() - runt) / 1000;
     const WPM = Math.round(allchar / 5 / (match / 60));
     const NumWPM = Math.round((allchar - gltchar) / 5 / (match / 60));
@@ -67,6 +66,7 @@ const ComparePage = () => {
     dispatch({ type: "5MIN", payload: { totalCharacterTyped, WPM } });
   }
 
+  // Start the timer
   function runtr() {
     setAllchar(0);
     setGltchar(0);
@@ -76,6 +76,7 @@ const ComparePage = () => {
     setTimes(id);
   }
 
+  // Change the text to be typed
   const handleTextChange = () => {
     if (level === "plainText") {
       const randomValue = Math.floor(Math.random() * plainText.length);
@@ -86,6 +87,7 @@ const ComparePage = () => {
     }
   };
 
+  // Handle user input
   const handleInput = (e) => {
     const value = e.target.value;
     setInputtypes(value);
@@ -113,7 +115,7 @@ const ComparePage = () => {
       setAllchar(allchar + 1);
     }
 
-    //  word per min
+    // Calculate incorrect characters
     if (!runt) {
       setRunt(Date.now());
     }
@@ -127,11 +129,11 @@ const ComparePage = () => {
       }
     }
 
+    // Check if all characters have been typed correctly
     if (test === value && value.length === presentText.length) {
       const match = (Date.now() - runt) / 1000;
       const WPM = Math.round(all / 5 / (match / 60));
       const NumWPM = Math.round((all - gltchars) / 5 / (match / 60));
-
       const accuracy = Math.floor((NumWPM * 100) / WPM);
 
       setInputtypes("");
@@ -144,6 +146,7 @@ const ComparePage = () => {
     }
   };
 
+  // Set initial text
   useEffect(() => {
     handleTextChange();
   }, []);

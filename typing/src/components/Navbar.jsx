@@ -8,15 +8,21 @@ import {
   Text,
   IconButton,
   Image,
+  Button,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import logo from "../images/logo.png";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-
+  const dispatch = useDispatch();
+  const { isAuth } = useSelector((store) => store.AuthReducer);
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+  const handleLogout = () => {
+    dispatch({ type: "LOGOUT" });
   };
   return (
     <Box bg="#101820FF" py={4} px={6}>
@@ -51,9 +57,16 @@ const Navbar = () => {
             </Text>
           </Link>
           <Link to={"/login"}>
-            <Text fontSize="md" color="white">
-              Login
-            </Text>
+            {isAuth && (
+              <Text fontSize="md" color="white" onClick={handleLogout}>
+                Logout
+              </Text>
+            )}
+            {!isAuth && (
+              <Text fontSize="md" color="white">
+                Login
+              </Text>
+            )}
           </Link>
         </HStack>
       </Flex>

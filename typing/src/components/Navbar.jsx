@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import logo from "../images/logo.png";
-
+import { Link } from "react-router-dom";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -37,18 +37,24 @@ const Navbar = () => {
           spacing={8}
           display={{ base: isOpen ? "flex" : "none", md: "flex" }}
         >
-          <Text fontSize="md" color="white">
-            Home
-          </Text>
+          <Link to={"/"}>
+            <Text fontSize="md" color="white">
+              Home
+            </Text>
+          </Link>
           <Text fontSize="md" color="white">
             About
           </Text>
-          <Text fontSize="md" color="white">
-            Services
-          </Text>
-          <Text fontSize="md" color="white">
-            Contact
-          </Text>
+          <Link to={"/signup"}>
+            <Text fontSize="md" color="white">
+              Signup
+            </Text>
+          </Link>
+          <Link to={"/login"}>
+            <Text fontSize="md" color="white">
+              Login
+            </Text>
+          </Link>
         </HStack>
       </Flex>
     </Box>

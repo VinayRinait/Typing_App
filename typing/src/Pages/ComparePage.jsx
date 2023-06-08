@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Box, Button, Text, Input, useMediaQuery } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Text,
+  Input,
+  useMediaQuery,
+  useToast,
+} from "@chakra-ui/react";
 const plainText = [
   "aada aa aa aa",
   "sds sklj;s ss ss",
@@ -38,6 +45,7 @@ const plainText = [
 ];
 const ComparePage = () => {
   const presentText = useSelector((store) => store.AppReducer.presentText);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [inputtypes, setInputtypes] = useState(""); // State for user input
   const [presenttchar, setPresenttchar] = useState(presentText[0]); // State for the current character to be displayed
@@ -53,7 +61,7 @@ const ComparePage = () => {
   const [isSmallerThanMd] = useMediaQuery("(max-width: 768px)"); // Media query for responsiveness
   let totalCharacterTyped; // Variable to store total characters typed
   const dispatch = useDispatch();
-
+  const toast = useToast();
   // Check if 5 minutes have passed and calculate WPM
   if (seconds % 300 === 0 && seconds !== 0 && times) {
     clearInterval(times);
@@ -62,6 +70,9 @@ const ComparePage = () => {
     const WPM = Math.round(allchar / 5 / (match / 60));
     const NumWPM = Math.round((allchar - gltchar) / 5 / (match / 60));
     const accuracy = Math.floor((NumWPM * 100) / WPM);
+    if (accuracy < 0) {
+      accuracy = 0; // Set accuracy to 0 if it goes below 0
+    }
     totalCharacterTyped = allchar;
     dispatch({ type: "5MIN", payload: { totalCharacterTyped, WPM } });
   }
@@ -81,7 +92,7 @@ const ComparePage = () => {
     if (level === "plainText") {
       const randomValue = Math.floor(Math.random() * plainText.length);
 
-      setPresenttchar(plainText[randomValue][0]);
+      setPresenttchar(plainText[randomValue]);
 
       dispatch({ type: "CHANGE", payload: plainText[randomValue] });
     }
@@ -91,6 +102,8 @@ const ComparePage = () => {
   const handleInput = (e) => {
     const value = e.target.value;
     setInputtypes(value);
+    setErrorMessage(""); // Clear the error message
+
     if (seconds === 0 && !times) {
       let id = setInterval(() => {
         setSeconds((seconds) => seconds + 1);
@@ -123,6 +136,10 @@ const ComparePage = () => {
     if (test !== value) {
       setGltchars(gltchars + 1);
       setGltchar(gltchar + 1);
+
+      // Set the error message
+      setErrorMessage("Wrong word! Delete the incorrect characters.");
+      return; // Exit the function to prevent further processing
     } else {
       if (value[value.length - 1] === presentText[value.length - 1]) {
         setPresenttchar(presentText[value.length]);
@@ -134,8 +151,10 @@ const ComparePage = () => {
       const match = (Date.now() - runt) / 1000;
       const WPM = Math.round(all / 5 / (match / 60));
       const NumWPM = Math.round((all - gltchars) / 5 / (match / 60));
-      const accuracy = Math.floor((NumWPM * 100) / WPM);
-
+      let accuracy = Math.floor((NumWPM * 100) / WPM);
+      if (accuracy < 0) {
+        accuracy = 0; // Set accuracy to 0 if it goes below 0
+      }
       setInputtypes("");
       setRunt(null);
       setAll(1);
@@ -153,7 +172,16 @@ const ComparePage = () => {
 
   const minutes = Math.floor(seconds / 60);
   const secondss = seconds % 60;
-
+  // Display the error message
+  if (errorMessage !== "") {
+    toast({
+      title: "Error",
+      description: errorMessage,
+      status: "error",
+      duration: 300,
+      isClosable: true,
+    });
+  }
   return (
     <>
       <div>
@@ -170,7 +198,7 @@ const ComparePage = () => {
             <Button
               variant="outlined"
               sx={{
-                width: 120,
+                // width: 120,
                 color: "white",
                 marginLeft: "20px",
                 backgroundColor: "teal",

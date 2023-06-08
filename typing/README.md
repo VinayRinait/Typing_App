@@ -39,8 +39,9 @@
 
 <p>Here are some screenshots of the application:</p>
 
-<img src="./images/s1 (1).png" alt="Screenshot 1">
-<img src="screenshot2.png" alt="Screenshot 2">
-<img src="screenshot3.png" alt="Screenshot 3">
+<img src="https://res.cloudinary.com/dguq5ln6o/image/upload/v1686182642/s1_4_iihjyx.png" alt="Screenshot 1">
+<img src="https://res.cloudinary.com/dguq5ln6o/image/upload/v1686182641/s1_2_tur3yo.png" alt="Screenshot 2">
+<img src="https://res.cloudinary.com/dguq5ln6o/image/upload/v1686182641/s1_3_ymuvu7.png" alt="Screenshot 3">
+<img src="https://res.cloudinary.com/dguq5ln6o/image/upload/v1686182641/s1_1_uuako8.png" alt="Screenshot 4">
 
 <p>Thank you for your interest in the Typing Challenge App!</p>
